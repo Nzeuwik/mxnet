@@ -54,7 +54,7 @@ USE_CUDNN = 0
 USE_OPENCV = 1
 
 # use openmp for parallelization
-USE_OPENMP = 1
+USE_OPENMP = 0
 
 # choose the version of blas you want to use
 # can be: mkl, blas, atlas, openblas

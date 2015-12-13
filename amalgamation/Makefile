@@ -1,6 +1,8 @@
 export MXNET_ROOT=`pwd`/..
 # Change this to path of openblas
-export OPENBLAS_ROOT=`pwd`/OpenBLAS
+export OPENBLAS_ROOT=/usr/local/opt/openblas
+export OPENBLAS_LIB=${OPENBLAS_ROOT}/lib
+export OPENBLAS_INC=${OPENBLAS_ROOT}/include
 
 # Whether use minimum build without blas and SSE, this will make the library super slow
 ifndef MIN
@@ -17,8 +19,8 @@ endif
 
 CFLAGS=-std=c++11 -Wno-unknown-pragmas -Wall
 ifneq ($(MIN), 1)
-	CFLAGS+= -I${OPENBLAS_ROOT}
-	LDFLAGS+=-L${OPENBLAS_ROOT} -lopenblas
+	CFLAGS+= -I${OPENBLAS_INC}
+	LDFLAGS+=-L${OPENBLAS_LIB} -lopenblas
 endif
 
 
@@ -47,7 +49,6 @@ jni_libmxnet_predict.so: jni_libmxnet_predict.o
 	${CXX} ${CFLAGS} -shared -o $@ $(filter %.o %.a, $^) $(LDFLAGS)
 
 ifneq ($(ANDROID), 1)
-        LDFLAGS+= -lrt
         android:
 else
         CFLAGS+=  -mhard-float -D_NDK_MATH_NO_SOFTFP=1 -O3

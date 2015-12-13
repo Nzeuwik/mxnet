@@ -177,14 +177,11 @@ class ImageNormalizeIter : public IIterator<DataInst> {
 
     if (param_.mean_r > 0.0f || param_.mean_g > 0.0f || param_.mean_b > 0.0f) {
       // If the input has 3 channels, we substract the mean value on each
-      if(data.shape_[0] == 3) {
+      if (data.shape_[0] == 3) {
         data[0] -= param_.mean_r;
         data[1] -= param_.mean_g;
         data[2] -= param_.mean_b;
-      }
-      // Otherwise, the image has only 1 channel, we substract the value on R channel.
-      // \todo Substract the mean of mean_r, mean_b, mean_g?
-      else {
+      } else {
         data[0] -= param_.mean_r;
       }
       if ((param_.rand_mirror && coin_flip(rnd_)) || param_.mirror) {

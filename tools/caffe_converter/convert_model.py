@@ -46,7 +46,7 @@ def main():
     else:
         layers = parse.parse_caffemodel(args.caffe_model)
     
-    arg_shapes, output_shapes, aux_shapes = prob.infer_shape(data=(1,3,224,224))
+    arg_shapes, output_shapes, aux_shapes = prob.infer_shape(data=(1,1,36,28))
     arg_names = prob.list_arguments()
     arg_shape_dic = dict(zip(arg_names, arg_shapes))
     arg_params = {}
@@ -63,7 +63,7 @@ def main():
             assert(len(layer_blobs) == 2)
             wmat = np.array(layer_blobs[0].data).reshape(layer_blobs[0].num, layer_blobs[0].channels, layer_blobs[0].height, layer_blobs[0].width)
             bias = np.array(layer_blobs[1].data)
-            if first_conv:
+            if first_conv and layer_blobs[0].channels == 3:
                 print 'Swapping BGR of caffe into RGB in mxnet'
                 wmat[:, [0, 2], :, :] = wmat[:, [2, 0], :, :]
 
@@ -78,6 +78,7 @@ def main():
             if weight_name not in arg_shape_dic:
                 print weight_name + ' not found in arg_shape_dic.'
                 continue
+            print arg_shape_dic[weight_name]
             wmat = wmat.reshape(arg_shape_dic[weight_name])
             arg_params[weight_name] = mx.nd.zeros(wmat.shape)
             arg_params[weight_name][:] = wmat

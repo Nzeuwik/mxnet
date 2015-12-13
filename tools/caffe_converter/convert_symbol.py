@@ -65,12 +65,16 @@ def proto2script(proto_file):
                 stride = 1 if len(param.stride) == 0 else param.stride[0]
             kernel_size = ''
             if isinstance(param.kernel_size, int):
-                kernel_size = param.kernel_size
+                kernel_size = (param.kernel_size, param.kernel_size)
+            elif param.kernel_size:
+                kernel_size = (param.kernel_size[0], param.kernel_size[0])
+            elif param.kernel_h and param.kernel_w:
+                kernel_size = (param.kernel_h, param.kernel_w)
             else:
-                kernel_size = param.kernel_size[0]
+                kernel_size = (1, 1)
             param_string = "num_filter=%d, pad=(%d,%d), kernel=(%d,%d), stride=(%d,%d), no_bias=%s" %\
-                (param.num_output, pad, pad, kernel_size,\
-                kernel_size, stride, stride, not param.bias_term)
+                (param.num_output, pad, pad, kernel_size[0],\
+                kernel_size[1], stride, stride, not param.bias_term)
             need_flatten[name] = True
         if layer[i].type == 'Pooling' or layer[i].type == 17:
             type_string = 'mx.symbol.Pooling'
