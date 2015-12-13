@@ -271,6 +271,14 @@ ParseNext(std::vector<InstVector> *out_vec) {
           }
         }
       }
+      // If this is a grayscale image, substract only mean_r.
+      else {
+        for (int i = 0; i < res.rows; ++i) {
+          for (int j = 0; j < res.cols; ++j) { 
+            data[0][i][j] = res.at<uint8_t>(i, j);
+          }
+        }
+      }
       mshadow::Tensor<cpu, 1> label = out.label().Back();
       if (label_map_ != nullptr) {
         mshadow::Copy(label, label_map_->Find(rec.image_index()));
